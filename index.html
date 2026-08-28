@@ -5,14 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Haunted CCTV // Night Watch</title>
 <style>
-:root{--ink:#d7e8e6;--muted:#7c9494;--line:rgba(130,165,165,.22);--glass:rgba(3,8,10,.72);--red:#ee4d4d}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--ink);font:12px/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-body{user-select:none}.app{position:fixed;inset:0;background:#020506}canvas{display:block;width:100%;height:100%}
-.hud{position:fixed;inset:0;pointer-events:none;text-shadow:0 2px 10px #000}.top{position:absolute;left:18px;right:18px;top:14px;display:flex;justify-content:space-between;align-items:center}.brand{letter-spacing:.2em;font-weight:700}.status{display:flex;align-items:center;gap:10px;color:#9ab0ae}.dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 9px var(--red);animation:pulse 1.4s infinite}.cams{position:absolute;right:16px;top:54px;width:min(300px,31vw);display:grid;gap:6px;pointer-events:auto}.cam{padding:9px 10px;border:1px solid var(--line);background:var(--glass);color:#7d9695;cursor:pointer;backdrop-filter:blur(6px);transition:.18s}.cam span{float:right;color:inherit}.cam:hover{background:rgba(13,24,26,.84)}.cam.active{border-color:#bdd0ce;color:#e6f2f0;box-shadow:inset 3px 0 #d8e8e6}
-.bottom{position:absolute;left:16px;right:16px;bottom:14px;display:flex;justify-content:space-between}.readout{padding:5px 8px;border:1px solid rgba(100,135,138,.22);background:rgba(3,7,8,.48);color:#91a8a7}.alert{position:absolute;left:50%;top:13%;transform:translateX(-50%);padding:8px 14px;border:1px solid rgba(250,100,100,.6);background:rgba(30,4,5,.62);color:#ffaaaa;letter-spacing:.12em;opacity:0;transition:opacity .2s}.alert.show{opacity:1}.scan{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 2px,transparent 4px);mix-blend-mode:screen;opacity:.23}.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 46%,rgba(0,0,0,.68) 100%)}.grain{position:absolute;inset:-20%;opacity:.045;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain .18s steps(2) infinite}.flash{position:absolute;inset:0;background:#eaffff;opacity:0}.flash.go{animation:flash .14s steps(2)}
-.hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);color:rgba(210,230,228,.44);font-size:10px;letter-spacing:.14em}
-@keyframes pulse{50%{opacity:.4}}@keyframes grain{to{transform:translate(1.5%,-1%)}}@keyframes flash{0%,100%{opacity:0}30%{opacity:.12}}
-@media(max-width:760px){.cams{width:235px}.cam{font-size:10px}.bottom{font-size:9px}.hint{display:none}}
+:root{--ink:#d8e7e5;--muted:#829997;--line:rgba(145,180,177,.25);--glass:rgba(2,7,9,.66);--red:#ef5555}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--ink);font:12px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{user-select:none}.app{position:fixed;inset:0;background:#020405}canvas{display:block;width:100%;height:100%}
+.hud{position:fixed;inset:0;pointer-events:none;text-shadow:0 2px 12px #000}.top{position:absolute;left:18px;right:18px;top:12px;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;letter-spacing:.18em}.status{display:flex;gap:10px;align-items:center;color:#9fb1af}.dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.2s infinite}.cams{position:absolute;top:54px;right:16px;width:min(330px,29vw);display:grid;gap:6px;pointer-events:auto}.cam{padding:10px 11px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(7px);color:#78908d;cursor:pointer;transition:.15s}.cam span{float:right}.cam:hover{background:rgba(12,22,24,.84)}.cam.active{color:#e4efed;border-color:#c3d4d1;box-shadow:inset 3px 0 #dbe9e6}.bottom{position:absolute;left:6px;right:6px;bottom:8px;display:flex;justify-content:space-between}.readout{padding:5px 7px;border:1px solid rgba(100,135,138,.2);background:rgba(2,6,7,.5);color:#8fa5a2}.hint{position:absolute;left:50%;bottom:11px;transform:translateX(-50%);font-size:10px;letter-spacing:.12em;color:rgba(215,230,228,.36)}.alert{position:absolute;left:50%;top:13%;transform:translateX(-50%);padding:8px 14px;border:1px solid rgba(255,112,112,.65);background:rgba(32,5,6,.66);color:#ffb0b0;letter-spacing:.12em;opacity:0;transition:.18s}.alert.show{opacity:1}.scan{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.028) 0 1px,transparent 1px 4px);mix-blend-mode:screen;opacity:.22}.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.72) 100%)}.grain{position:absolute;inset:-20%;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain .16s steps(2) infinite}.flash{position:absolute;inset:0;background:#e9ffff;opacity:0}.flash.go{animation:flash .15s steps(2)}
+@keyframes pulse{50%{opacity:.35}}@keyframes grain{to{transform:translate(1.2%,-.8%)}}@keyframes flash{0%,100%{opacity:0}30%{opacity:.12}}
+@media(max-width:760px){.cams{width:235px}.cam{font-size:10px}.hint{display:none}.bottom{font-size:9px}}
 </style>
 </head>
 <body>
@@ -31,64 +29,98 @@ const canvas=document.getElementById('view');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.setSize(innerWidth,innerHeight,false);renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x020405);scene.fog=new THREE.FogExp2(0x070b0c,.038);
-const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.08,100);
-const timer=new THREE.Clock();let elapsed=0,camIndex=0,eventActive=false,eventLeft=0,eventFigure=null,eventCamera=-1,eventCooldown=7;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x030506);scene.fog=new THREE.Fog(0x05090a,18,62);
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.08,100);
+const timer=new THREE.Clock();
+let elapsed=0,camIndex=0,eventActive=false,eventLeft=0,eventCamera=-1,eventFigure=null,eventCooldown=8;
 const cams=[
-{name:'CAM 01',place:'SERVICE HALL',pos:[0,2.25,10],look:[0,1.85,-5]},
-{name:'CAM 02',place:'NORTH STAIRWELL',pos:[-7.2,2.3,6.4],look:[-3.4,1.9,-3.5]},
-{name:'CAM 03',place:'SUB-BASEMENT',pos:[6.6,2.0,6.8],look:[2,1.65,-7]},
-{name:'CAM 04',place:'EMPTY WARD',pos:[8.3,2.3,-2.5],look:[1.6,1.65,-15]},
-{name:'CAM 05',place:'LOADING BAY',pos:[-8.3,2.25,-2],look:[-1,1.8,-15]},
-{name:'CAM 06',place:'COURTYARD',pos:[0,3.1,-10],look:[0,2.2,-18]}
+ {name:'CAM 01',place:'SERVICE HALL',pos:[0,2.15,12],look:[0,1.85,-10]},
+ {name:'CAM 02',place:'NORTH STAIRWELL',pos:[30,2.35,10],look:[30,1.7,-1]},
+ {name:'CAM 03',place:'SUB-BASEMENT',pos:[-30,2.05,10],look:[-30,1.6,-9]},
+ {name:'CAM 04',place:'EMPTY WARD',pos:[30,2.2,-18],look:[30,1.6,-31]},
+ {name:'CAM 05',place:'LOADING BAY',pos:[-30,2.15,-18],look:[-30,1.75,-31]},
+ {name:'CAM 06',place:'COURTYARD',pos:[0,3.0,-41],look:[0,2.0,-52]}
 ];
-const M={wall:new THREE.MeshStandardMaterial({color:0x151c1d,roughness:.95}),floor:new THREE.MeshStandardMaterial({color:0x0b1011,roughness:.88}),dark:new THREE.MeshStandardMaterial({color:0x040506,roughness:1}),metal:new THREE.MeshStandardMaterial({color:0x303839,roughness:.62,metalness:.3}),wood:new THREE.MeshStandardMaterial({color:0x201915,roughness:.96}),cloth:new THREE.MeshStandardMaterial({color:0x252a29,roughness:1}),glass:new THREE.MeshStandardMaterial({color:0x203031,transparent:true,opacity:.22,roughness:.2})};
-function addBox(w,h,d,mat,x,y,z,parent=scene){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
-function addCyl(r,h,mat,x,y,z,parent=scene){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,12),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
-function light(x,y,z,power=2,range=14){const p=new THREE.PointLight(0x9fbfbc,power,range,2);p.position.set(x,y,z);p.castShadow=true;scene.add(p);const g=new THREE.Mesh(new THREE.SphereGeometry(.07,8,8),new THREE.MeshBasicMaterial({color:0xc7e6e1}));g.position.copy(p.position);scene.add(g);return{p,g,base:power,phase:Math.random()*6.28}}
+const M={
+ floor:new THREE.MeshStandardMaterial({color:0x101718,roughness:.91}),
+ wall:new THREE.MeshStandardMaterial({color:0x171e1f,roughness:.96}),
+ dark:new THREE.MeshStandardMaterial({color:0x040607,roughness:1}),
+ metal:new THREE.MeshStandardMaterial({color:0x384143,roughness:.58,metalness:.34}),
+ rust:new THREE.MeshStandardMaterial({color:0x30221b,roughness:1}),
+ cloth:new THREE.MeshStandardMaterial({color:0x2a2d2c,roughness:1}),
+ glass:new THREE.MeshStandardMaterial({color:0x667b79,transparent:true,opacity:.13,roughness:.3}),
+ concrete:new THREE.MeshStandardMaterial({color:0x232828,roughness:1})
+};
+function box(w,h,d,mat,x,y,z,parent=scene){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+function cyl(r,h,mat,x,y,z,parent=scene){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,12),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+function point(x,y,z,power=1.7,range=14){const p=new THREE.PointLight(0xa9c3c0,power,range,2);p.position.set(x,y,z);p.castShadow=true;scene.add(p);const g=new THREE.Mesh(new THREE.SphereGeometry(.065,8,8),new THREE.MeshBasicMaterial({color:0xcde6e2}));g.position.copy(p.position);scene.add(g);return{p,g,base:power,phase:Math.random()*6.28}}
 const lights=[];
-// SERVICE HALL: long real 3D corridor
-const hall=new THREE.Group();scene.add(hall);
-addBox(22,.25,42,M.floor,0,0,0,hall);addBox(.35,5.4,42,M.wall,-11,2.7,0,hall);addBox(.35,5.4,42,M.wall,11,2.7,0,hall);addBox(22,.18,.35,M.wall,0,2.7,-21,hall);
-for(let z=-18;z<=18;z+=6){addBox(1.9,.11,.5,M.metal,0,4.75,z,hall);lights.push(light(0,4.55,z,2.0,12));for(const x of[-8.7,8.7])addBox(1.6,3.5,.12,M.dark,x,1.75,z,hall)}
-for(const x of[-8.1,8.1]){addCyl(.11,40,M.metal,x,2.2,0,hall);addCyl(.055,40,M.metal,x+.16,2.2,0,hall)}
-// STAIRWELL: raised platforms and metal railings
-const stair=new THREE.Group();scene.add(stair);addBox(10,.2,22,M.floor,-5,0,0,stair);addBox(.3,5.2,22,M.wall,-10,2.6,0,stair);addBox(.3,5.2,22,M.wall,0,2.6,0,stair);
-for(let i=0;i<12;i++){const z=4-i*.72,y=.22+i*.24;addBox(4,.22,1.3,M.metal,-5,y,z,stair);addBox(.09,1.1,1.3,M.metal,-6.9,y+.55,z,stair);addBox(.09,1.1,1.3,M.metal,-3.1,y+.55,z,stair)}
-lights.push(light(-5,4.6,-3,1.6,10),light(-5,3.7,4,1.0,8));
-// SUB-BASEMENT: concrete pillars, tanks, cables
-const base=new THREE.Group();scene.add(base);addBox(20,.22,32,M.floor,3,0,-7,base);addBox(.35,5.2,32,M.wall,-7,2.6,-7,base);addBox(.35,5.2,32,M.wall,13,2.6,-7,base);
-for(let z=-18;z<=2;z+=5){addBox(.55,4.7,.55,M.metal,0,2.35,z,base);addBox(.55,4.7,.55,M.metal,7,2.35,z,base)}
-for(let i=0;i<4;i++)addCyl(.72,2.8,M.metal,1+i*2.6,1.4,-12-i*3,base);
-for(let z=-18;z<=2;z+=6)lights.push(light(3,4.55,z,1.25,10));
-// EMPTY WARD: beds + privacy curtains
-const ward=new THREE.Group();scene.add(ward);addBox(18,.2,31,M.floor,6,0,-17,ward);addBox(.3,5.1,31,M.wall,15,2.55,-17,ward);addBox(.3,5.1,31,M.wall,-3,2.55,-17,ward);
-for(let z=-6;z>=-28;z-=5){addBox(3.4,.55,5.5,M.cloth,5.7,.55,z,ward);addBox(3.4,1.25,.2,M.wood,5.7,1.05,z-2.6,ward);addBox(.08,3.6,5.2,M.glass,3.85,1.9,z,ward)}
-lights.push(light(5,4.45,-7,1.3,10),light(5,4.45,-22,.9,9));
-// LOADING BAY: shutter and cargo pallets
-const bay=new THREE.Group();scene.add(bay);addBox(18,.2,30,M.floor,-6,0,-16,bay);addBox(.3,5.3,30,M.wall,3,2.65,-16,bay);addBox(.3,5.3,30,M.wall,-15,2.65,-16,bay);
-for(let z=-6;z>=-27;z-=5){for(let x of[-11,-7.5,-4])addBox(2.2,1.8,2.2,M.wood,x,.9,z,bay)}
-for(let z=-7;z>=-25;z-=2){addBox(11,.09,.07,M.metal,-6,4.65,z,bay)}
-addBox(12,4.5,.18,M.metal,-6,2.3,-30,bay);lights.push(light(-7,4.4,-8,1.4,11),light(-7,4.4,-24,.9,9));
-// COURTYARD: wall, trees and wet ground
-const yard=new THREE.Group();scene.add(yard);addBox(30,.18,28,new THREE.MeshStandardMaterial({color:0x101713,roughness:1}),0,0,-22,yard);addBox(30,4,.3,M.wall,0,2,-36,yard);addBox(.3,4,28,M.wall,-15,2,-22,yard);addBox(.3,4,28,M.wall,15,2,-22,yard);
-for(let i=0;i<24;i++){const x=-13+Math.random()*26,z=-10-Math.random()*23;addBox(.16,.5+Math.random()*.9,.16,M.wood,x,.3,z,yard);if(i%3===0)addCyl(.7,1.6,M.wood,x,.9,z,yard)}
-lights.push(light(-8,5,-17,.65,13),light(9,4,-28,.55,11));
-// ambient + moon
-scene.add(new THREE.HemisphereLight(0x8eaeb1,0x010203,.26));const moon=new THREE.DirectionalLight(0x9ab8bb,.45);moon.position.set(-8,12,-16);moon.castShadow=true;scene.add(moon);
-// Dust motes
-const pg=new THREE.BufferGeometry(),pv=[];for(let i=0;i<500;i++)pv.push((Math.random()-.5)*28,Math.random()*5,(Math.random()-.5)*45);pg.setAttribute('position',new THREE.Float32BufferAttribute(pv,3));scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xb6ceca,size:.022,transparent:true,opacity:.17})));
-function figure(){const g=new THREE.Group(),b=new THREE.MeshStandardMaterial({color:0x010202,roughness:1});const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.34,1.05,6,10),b);torso.position.y=1.05;g.add(torso);const head=new THREE.Mesh(new THREE.SphereGeometry(.31,14,10),b);head.position.y=2.02;g.add(head);for(const x of[-.18,.18]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.17,.9,.18),b);leg.position.set(x,.45,0);leg.castShadow=true;g.add(leg)}const eye=new THREE.MeshBasicMaterial({color:0xffe0df});for(const x of[-.095,.095]){const e=new THREE.Mesh(new THREE.SphereGeometry(.034,6,6),eye);e.position.set(x,2.06,.295);g.add(e)}return g}
-function hideFigure(){if(eventFigure){eventFigure.visible=false}}
-function placeFigure(){if(!eventFigure){eventFigure=figure();scene.add(eventFigure)}const p=cams[eventCamera];eventFigure.position.set(p.pos[0]+(Math.random()-.5)*2.7,0,p.pos[2]-6-Math.random()*10);eventFigure.rotation.y=Math.PI+Math.random()*.7;eventFigure.visible=eventCamera===camIndex}
-function event(force=false){if(eventActive&&!force)return;eventActive=true;eventLeft=4+Math.random()*5;eventCooldown=8+Math.random()*10;eventCamera=Math.floor(Math.random()*6);placeFigure();document.getElementById('alert').textContent=['MOTION DETECTED','UNKNOWN PRESENCE','HUMAN FORM DETECTED','CAMERA OCCUPIED','SIGNAL ANOMALY'][Math.floor(Math.random()*5)];document.getElementById('alert').classList.add('show');const f=document.getElementById('flash');f.classList.add('go');setTimeout(()=>f.classList.remove('go'),170)}
-function endEvent(){eventActive=false;eventLeft=0;hideFigure();document.getElementById('alert').classList.remove('show')}
-function setCam(i){camIndex=i;document.querySelectorAll('.cam').forEach((e,n)=>e.classList.toggle('active',n===i));document.getElementById('location').textContent=cams[i].name+' · '+cams[i].place;endEvent()}
-const box=document.getElementById('cams');cams.forEach((c,i)=>{const b=document.createElement('div');b.className='cam'+(i?'':' active');b.innerHTML=c.name+' <span>'+c.place+'</span>';b.onclick=()=>setCam(i);box.appendChild(b)});
+function makeRoom(cx,cz,w,d){const g=new THREE.Group();scene.add(g);box(w,.22,d,M.floor,cx,0,cz,g);box(.35,5.1,d,M.wall,cx-w/2,2.55,cz,g);box(.35,5.1,d,M.wall,cx+w/2,2.55,cz,g);box(w,5.1,.35,M.wall,cx,2.55,cz-d/2,g);return g}
+// CAM 01 — service hall
+{
+ const g=makeRoom(0,0,20,42); box(20,.2,.35,M.wall,0,4.95,0,g);
+ for(let z=-18;z<=18;z+=6){box(1.8,.1,.5,M.metal,0,4.67,z,g);lights.push(point(0,4.5,z,1.75,13));for(const x of[-8,8]){box(2.2,3.4,.1,M.dark,x,1.72,z,g);box(.12,3.6,.12,M.metal,x+(x<0?.98:-.98),1.8,z,g)}}
+ for(const x of[-7.1,7.1]){cyl(.1,40,M.metal,x,2.15,0,g);cyl(.05,40,M.metal,x+.18,2.15,0,g)}
+ for(let z=-16;z<=14;z+=5)box(2.4,.12,.38,M.metal,0,.06,z,g);
+}
+// CAM 02 — stairwell
+{
+ const g=makeRoom(30,0,14,22); 
+ for(let i=0;i<12;i++){const y=.2+i*.21;const z=5-i*.78;box(5,.22,1.45,M.concrete,30,y,z,g)}
+ for(let i=0;i<9;i++){const z=4-i*.9,y=1.1+i*.2;box(.08,1.7,.08,M.metal,27.55,y,z,g);box(.08,1.7,.08,M.metal,32.45,y,z,g)}
+ const rail=box(5.3,.08,.08,M.metal,30,2.8,0,g);rail.rotation.z=-.18;
+ for(const z of[-6,1,7])lights.push(point(30,4.45,z,1.25,10));
+}
+// CAM 03 — basement
+{
+ const g=makeRoom(-30,-1,18,30);
+ for(let x of[-35,-31,-27])for(let z=-11;z<=8;z+=6){cyl(.62,3.2,M.metal,x,1.6,z,g);box(1.4,.12,1.2,M.metal,x,3.25,z,g)}
+ for(let x of[-36,-30,-24])box(.12,4.4,.12,M.metal,x,2,-10,g);
+ for(let z=-11;z<=7;z+=6)lights.push(point(-30,4.45,z,1.05,9));
+}
+// CAM 04 — empty hospital ward
+{
+ const g=makeRoom(30,-24,18,30);
+ for(let z=-14;z>=-34;z-=5){box(3.4,.58,5,M.cloth,28.2,.58,z,g);box(3.4,1.2,.2,M.rust,28.2,1.08,z-2.45,g);box(3.5,3.2,.08,M.glass,24.7,1.7,z,g);box(3.5,3.2,.08,M.glass,32.3,1.7,z,g)}
+ box(2.8,.18,2.8,M.metal,30,.95,-34,g);lights.push(point(30,4.45,-15,1.15,10),point(30,4.45,-28,.85,9));
+}
+// CAM 05 — loading bay
+{
+ const g=makeRoom(-30,-24,20,30);
+ for(let z=-11;z>=-34;z-=5){for(let x of[-37,-33,-29,-25])box(2.1,1.8,2.0,M.rust,x,.9,z,g)}
+ for(let z=-10;z>=-34;z-=2)box(11,.08,.09,M.metal,-30,4.55,z,g);
+ box(12,4.2,.25,M.metal,-30,2.25,-39,g);lights.push(point(-34,4.45,-12,1.35,11),point(-28,4.45,-31,.8,9));
+}
+// CAM 06 — courtyard
+{
+ const g=new THREE.Group();scene.add(g);box(28,.18,28,new THREE.MeshStandardMaterial({color:0x111713,roughness:1}),0,0,-52,g);box(28,4,.3,M.wall,0,2,-66,g);box(.3,4,28,M.wall,-14,2,-52,g);box(.3,4,28,M.wall,14,2,-52,g);
+ for(let i=0;i<20;i++){const x=-12+Math.random()*24,z=-42-Math.random()*20;box(.16,.5+Math.random()*1.2,.16,M.rust,x,.25,z,g);if(i%3===0)cyl(.6,1.5,M.rust,x,.8,z,g)}
+ lights.push(point(-7,5,-49,.6,13),point(8,4,-61,.5,11));
+}
+scene.add(new THREE.HemisphereLight(0x9eb8b9,0x010203,.24));
+const moon=new THREE.DirectionalLight(0x9cbfc0,.55);moon.position.set(-8,11,-16);moon.castShadow=true;scene.add(moon);
+// dust field
+const dustGeo=new THREE.BufferGeometry(),dust=[];for(let i=0;i<700;i++){dust.push((Math.random()-.5)*75,Math.random()*5.3,-Math.random()*76+16)}dustGeo.setAttribute('position',new THREE.Float32BufferAttribute(dust,3));scene.add(new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0xc3d9d7,size:.022,transparent:true,opacity:.16})));
+function makeFigure(){const g=new THREE.Group();const black=new THREE.MeshStandardMaterial({color:0x010202,roughness:1});const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.33,1.05,6,10),black);torso.position.y=1.04;g.add(torso);const head=new THREE.Mesh(new THREE.SphereGeometry(.31,14,10),black);head.position.y=2.02;g.add(head);for(const x of[-.18,.18]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.17,.92,.18),black);leg.position.set(x,.46,0);g.add(leg)}const eye=new THREE.MeshBasicMaterial({color:0xffdede});for(const x of[-.095,.095]){const e=new THREE.Mesh(new THREE.SphereGeometry(.034,6,6),eye);e.position.set(x,2.06,.295);g.add(e)}return g}
+function hideFigure(){if(eventFigure)eventFigure.visible=false}
+function positionFigure(){if(!eventFigure){eventFigure=makeFigure();scene.add(eventFigure)}const p=cams[eventCamera];eventFigure.position.set(p.pos[0]+(Math.random()-.5)*2.6,0,p.pos[2]-5.5-Math.random()*6);eventFigure.rotation.y=Math.PI+Math.random()*.55;eventFigure.scale.setScalar(.85+Math.random()*.28);eventFigure.visible=eventCamera===camIndex}
+function trigger(force=false){if(eventActive&&!force)return;eventActive=true;eventLeft=4.5+Math.random()*4.5;eventCamera=Math.floor(Math.random()*cams.length);positionFigure();document.getElementById('alert').textContent=['MOTION DETECTED','UNKNOWN PRESENCE','HUMAN FORM DETECTED','CAMERA OCCUPIED','SIGNAL ANOMALY'][Math.floor(Math.random()*5)];document.getElementById('alert').classList.add('show');document.getElementById('flash').classList.add('go');setTimeout(()=>document.getElementById('flash').classList.remove('go'),180)}
+function endEvent(){eventActive=false;eventLeft=0;eventCamera=-1;hideFigure();document.getElementById('alert').classList.remove('show')}
+function setCam(i){camIndex=i;document.querySelectorAll('.cam').forEach((e,n)=>e.classList.toggle('active',n===i));document.getElementById('location').textContent=cams[i].name+' · '+cams[i].place;if(eventActive&&eventCamera!==i)hideFigure();if(eventActive&&eventCamera===i&&eventFigure)eventFigure.visible=true}
+const list=document.getElementById('cams');cams.forEach((x,i)=>{const b=document.createElement('div');b.className='cam'+(i===0?' active':'');b.innerHTML=x.name+' <span>'+x.place+'</span>';b.onclick=()=>setCam(i);list.appendChild(b)});
 function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight,false);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6))}addEventListener('resize',resize);resize();
-addEventListener('keydown',e=>{const n=Number(e.key);if(n>=1&&n<=6)setCam(n-1);if(e.key.toLowerCase()==='m')event(true);if(e.code==='Space'){e.preventDefault();setCam(Math.floor(Math.random()*6))}});
+addEventListener('keydown',e=>{const n=Number(e.key);if(n>=1&&n<=6)setCam(n-1);if(e.key.toLowerCase()==='m')trigger(true);if(e.code==='Space'){e.preventDefault();setCam(Math.floor(Math.random()*6))}});
 function updateClock(){const d=new Date();document.getElementById('clock').textContent=[d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')}setInterval(updateClock,250);updateClock();
-function animate(){const dt=Math.min(timer.getDelta(),.05);elapsed+=dt;eventCooldown-=dt;for(const l of lights){const pulse=.82+.18*Math.sin(elapsed*(1.2+l.phase)+l.phase);l.p.intensity=l.base*pulse*(Math.random()<.003?Math.random()*.12:1);l.g.material.opacity=.3+.18*pulse}if(!eventActive&&eventCooldown<=0&&Math.random()<dt*.03)event();if(eventActive){eventLeft-=dt;if(eventFigure){eventFigure.visible=eventCamera===camIndex;if(eventFigure.visible){eventFigure.position.x+=Math.sin(elapsed*1.25)*dt*.09;eventFigure.position.y=.01+Math.sin(elapsed*1.9)*.015}}if(eventLeft<=0)endEvent()}const p=cams[camIndex],s=Math.sin(elapsed*.32+camIndex)*.035;camera.position.lerp(new THREE.Vector3(p.pos[0]+s,p.pos[1],p.pos[2]),.045);const target=new THREE.Vector3(p.look[0],p.look[1]+Math.sin(elapsed*.17+camIndex)*.018,p.look[2]);const q=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(camera.position,target,new THREE.Vector3(0,1,0)));camera.quaternion.slerp(q,.06);renderer.render(scene,camera);requestAnimationFrame(animate)}animate();
+function animate(){const dt=Math.min(timer.getDelta(),.05);elapsed+=dt;eventCooldown-=dt;
+ for(const l of lights){const flick=.86+.14*Math.sin(elapsed*1.6+l.phase);l.p.intensity=l.base*flick*(Math.random()<.003?Math.random()*.12:1);l.g.material.opacity=.28+.22*flick}
+ if(!eventActive&&eventCooldown<=0){if(Math.random()<dt*.024)trigger();else eventCooldown=4+Math.random()*9}
+ if(eventActive){eventLeft-=dt;if(eventFigure){if(eventCamera===camIndex){eventFigure.visible=true;eventFigure.position.x+=Math.sin(elapsed*1.05)*dt*.08}else eventFigure.visible=false;if(eventLeft<=0)endEvent()}}
+ const p=cams[camIndex];
+ camera.position.lerp(new THREE.Vector3(...p.pos),.055);
+ camera.lookAt(new THREE.Vector3(p.look[0],p.look[1]+Math.sin(elapsed*.18+camIndex)*.015,p.look[2]));
+ camera.fov=59+Math.sin(elapsed*.11)*.55;camera.updateProjectionMatrix();
+ renderer.render(scene,camera);requestAnimationFrame(animate)}
+animate();
 </script>
 </body>
 </html>
