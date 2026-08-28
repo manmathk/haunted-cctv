@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Haunted CCTV — Live Surveillance</title>
+<style>
+:root{--bg:#030506;--panel:#071014;--line:#1a353b;--text:#c9e7e7;--muted:#6d8b8e;--red:#f04b4b;--green:#8de7a5}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--text);font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{user-select:none}.app{position:relative;width:100vw;height:100vh;background:#000;overflow:hidden}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;background:#020304}
+.hud{position:absolute;inset:0;pointer-events:none}.top{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start;text-shadow:0 0 7px #000}.brand{letter-spacing:.18em;font-weight:700;color:#d8eeee}.status{display:flex;gap:12px;align-items:center}.dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red)}
+.bottom{position:absolute;left:16px;right:16px;bottom:14px;display:flex;justify-content:space-between;gap:12px}.readout{color:#95abad;background:rgba(3,7,8,.45);padding:5px 7px;border:1px solid rgba(50,80,85,.25);backdrop-filter:blur(1px)}
+.cams{position:absolute;right:16px;top:56px;display:grid;gap:6px;width:min(250px,25vw);pointer-events:auto}.cam{padding:7px 8px;background:rgba(4,10,12,.62);border:1px solid rgba(74,110,116,.34);color:#769396;cursor:pointer;transition:.2s}.cam.active{border-color:#9ac8c8;color:#d7eeee;box-shadow:inset 2px 0 #d7eeee}.cam:hover{background:rgba(10,22,24,.8)}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;color:rgba(220,240,240,.16);letter-spacing:.25em;font-size:10px}.event{position:absolute;left:50%;top:12%;transform:translateX(-50%);padding:7px 12px;border:1px solid rgba(244,80,80,.5);color:#ff9a9a;background:rgba(35,3,5,.45);opacity:0;transition:opacity .3s}.event.show{opacity:1}
+.scan{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.025) 0px,rgba(255,255,255,.025) 1px,transparent 2px,transparent 4px);mix-blend-mode:screen;opacity:.28}.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.52) 100%)}.noise{position:absolute;inset:-20%;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");animation:drift .22s steps(2) infinite}.flash{position:absolute;inset:0;background:#d8ffff;opacity:0}.flash.go{animation:flash .16s steps(2)}
+@keyframes flash{0%{opacity:0}25%{opacity:.13}100%{opacity:0}}@keyframes drift{0%{transform:translate(0,0)}25%{transform:translate(2%, -1%)}50%{transform:translate(-1%,2%)}75%{transform:translate(1%,1%)}100%{transform:translate(0,0)}}
+@media(max-width:700px){.cams{width:180px;top:52px}.cam{font-size:10px}.bottom{font-size:9px}.brand{font-size:10px}.status{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+<canvas id="scene"></canvas>
+<div class="hud">
+<div class="top"><div class="brand">HAUNTED CCTV // NIGHT WATCH</div><div class="status"><span class="dot"></span><span>LIVE</span><span id="clock">00:00:00</span></div></div>
+<div id="cams" class="cams"></div>
+<div id="event" class="event">MOTION DETECTED</div>
+<div class="center">CAMERA FEED // DO NOT ADJUST</div>
+<div class="bottom"><div id="location" class="readout">CAM 01 · SERVICE HALL</div><div id="meta" class="readout">REC ● 24/7 · AUTO SURVEILLANCE</div></div>
+<div class="scan"></div><div class="noise"></div><div class="vignette"></div><div id="flash" class="flash"></div>
+</div>
+</div>
+<script>
+const c=document.getElementById('scene'),ctx=c.getContext('2d');
+let W=innerWidth,H=innerHeight,dpr=Math.min(devicePixelRatio||1,2),cam=0,last=0,elapsed=0,eventTimer=0,eventState=0,entity=0;
+const cams=[
+{name:'CAM 01',place:'SERVICE HALL',tone:0},
+{name:'CAM 02',place:'NORTH STAIRWELL',tone:1},
+{name:'CAM 03',place:'SUB-BASEMENT',tone:2},
+{name:'CAM 04',place:'EMPTY WARD',tone:3},
+{name:'CAM 05',place:'LOADING BAY',tone:4},
+{name:'CAM 06',place:'COURTYARD',tone:5}
+];
+function resize(){W=innerWidth;H=innerHeight;dpr=Math.min(devicePixelRatio||1,2);c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',resize);resize();
+const rand=(a,b)=>a+Math.random()*(b-a);const pick=a=>a[(Math.random()*a.length)|0];
+function bg(t){
+ctx.fillStyle='#020506';ctx.fillRect(0,0,W,H);
+let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#071114');g.addColorStop(.55,'#030708');g.addColorStop(1,'#010202');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+}
+function grid(t){
+ctx.strokeStyle='rgba(65,101,106,.23)';ctx.lineWidth=1;
+let floor=H*.72;for(let i=0;i<14;i++){let x=i/13*W;ctx.beginPath();ctx.moveTo(W/2+(x-W/2)*.18,floor);ctx.lineTo(x,H);ctx.stroke()}
+for(let i=1;i<7;i++){let y=floor+Math.pow(i/7,1.55)*(H-floor);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+}
+function cameraFrame(t){
+const k=cams[cam].tone;
+let horizon=H*.53+Math.sin(t*.07+cam)*2;
+ctx.fillStyle=`rgb(${10+k*2},${16+k*2},${18+k*2})`;ctx.fillRect(0,0,W,H);
+// ceiling lamps
+for(let i=0;i<4;i++){let x=W*(.18+i*.22)+Math.sin(t*.001+i)*4;ctx.fillStyle='rgba(170,235,228,.13)';ctx.fillRect(x,H*.19,W*.065,4)}
+// perspective corridor
+ctx.fillStyle='rgba(7,12,14,.8)';ctx.beginPath();ctx.moveTo(W*.13,horizon);ctx.lineTo(W*.87,horizon);ctx.lineTo(W*.78,H);ctx.lineTo(W*.22,H);ctx.closePath();ctx.fill();
+ctx.strokeStyle='rgba(90,126,129,.4)';ctx.lineWidth=2;ctx.stroke();
+for(let s of [.3,.46,.62,.78]){ctx.beginPath();ctx.moveTo(W/2+(s-.5)*W*.1,horizon);ctx.lineTo(W*s,H);ctx.stroke()}
+for(let y of [horizon+H*.08,horizon+H*.19,horizon+H*.34]){ctx.beginPath();ctx.moveTo(W*.13+(y-horizon)*.03,y);ctx.lineTo(W*.87-(y-horizon)*.03,y);ctx.stroke()}
+// doorways / objects
+const doors=[.2,.37,.64,.8];doors.forEach((p,i)=>{let dw=W*.08,dh=H*.34;let x=W*p;ctx.fillStyle='rgba(2,5,6,.96)';ctx.fillRect(x-dw/2,horizon-dh*.55,dw,dh);ctx.strokeStyle='rgba(67,94,96,.5)';ctx.strokeRect(x-dw/2,horizon-dh*.55,dw,dh)});
+// floor sheen
+let rg=ctx.createRadialGradient(W*.5,H*.75,10,W*.5,H*.75,W*.45);rg.addColorStop(0,'rgba(120,155,154,.10)');rg.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=rg;ctx.fillRect(0,horizon,W,H-horizon);
+// camera-specific accents
+if(cam===1){drawStairs(t)} else if(cam===2){drawTunnel(t)} else if(cam===3){drawWard(t)} else if(cam===4){drawBay(t)} else if(cam===5){drawCourtyard(t)}
+}
+function drawStairs(t){ctx.strokeStyle='rgba(90,125,128,.55)';for(let i=0;i<8;i++){let y=H*.55+i*H*.035;ctx.beginPath();ctx.moveTo(W*.33,y);ctx.lineTo(W*.67,y);ctx.stroke()}ctx.fillStyle='rgba(220,250,246,.08)';ctx.fillRect(W*.42,H*.18,W*.16,H*.015)}
+function drawTunnel(t){ctx.strokeStyle='rgba(90,135,138,.45)';ctx.lineWidth=3;for(let i=0;i<6;i++){let inset=i*W*.06;ctx.strokeRect(inset,H*.16+inset*.05,W-inset*2,H*.65-inset*.1)}}
+function drawWard(t){for(let i=0;i<4;i++){let x=W*.2+i*W*.19;ctx.fillStyle='rgba(1,4,5,.9)';ctx.fillRect(x,H*.41,W*.14,H*.34);ctx.strokeStyle='rgba(89,125,126,.38)';ctx.strokeRect(x,H*.41,W*.14,H*.34)}}
+function drawBay(t){ctx.fillStyle='rgba(100,125,126,.18)';ctx.fillRect(W*.08,H*.25,W*.84,H*.02);ctx.fillStyle='rgba(220,239,235,.07)';for(let i=0;i<6;i++)ctx.fillRect(W*(.12+i*.15),H*.3,W*.07,H*.006)}
+function drawCourtyard(t){ctx.fillStyle='rgba(27,53,40,.35)';for(let i=0;i<18;i++){let x=(i*.14+Math.sin(t*.0003+i)*.02)%1;ctx.fillRect(x*W,H*(.42+(.1*i%0.22)),W*.018,H*.22)}}
+function drawEntity(t){
+if(!eventState)return;
+let p=entity%1;let x=W*(.5+Math.sin(t*.0012+entity*9)*.22),base=H*.72;let scale=.6+Math.sin(t*.0017)*.04;ctx.save();ctx.translate(x,base);ctx.scale(scale,scale);ctx.globalAlpha=Math.min(1,(eventTimer-1)/2)*(.75+.25*Math.sin(t*.01));
+ctx.fillStyle='rgba(3,5,6,.96)';ctx.beginPath();ctx.ellipse(0,-125,24,32,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(-28,-97);ctx.quadraticCurveTo(-54,-55,-36,5);ctx.lineTo(-18,4);ctx.lineTo(0,-45);ctx.lineTo(18,4);ctx.lineTo(36,5);ctx.quadraticCurveTo(54,-55,28,-97);ctx.closePath();ctx.fill();
+ctx.fillStyle='rgba(220,255,240,.85)';ctx.fillRect(-11,-130,6,3);ctx.fillRect(6,-130,6,3);ctx.restore();
+}
+function trigger(){eventState=1;eventTimer=4+Math.random()*5;entity=Math.random()*100;document.getElementById('event').textContent=pick(['MOTION DETECTED','UNKNOWN PRESENCE','SIGNAL INTERFERENCE','HUMAN FORM DETECTED','CAMERA OCCUPIED']);document.getElementById('event').classList.add('show');document.getElementById('flash').classList.add('go');setTimeout(()=>document.getElementById('flash').classList.remove('go'),180)}
+function frame(t){let dt=Math.min(0.05,(t-last)/1000||.016);last=t;elapsed+=dt;
+bg(t);cameraFrame(t);grid(t);drawEntity(t);
+if(eventState){eventTimer-=dt;if(eventTimer<=0){eventState=0;document.getElementById('event').classList.remove('show')}}
+if(!eventState&&Math.random()<dt*(cam===0?.003:.0022))trigger();
+ctx.fillStyle='rgba(255,255,255,.025)';ctx.fillRect(0,Math.random()*H,W,1);
+requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+function setCam(i){cam=i;document.querySelectorAll('.cam').forEach((e,n)=>e.classList.toggle('active',n===i));document.getElementById('location').textContent=`${cams[i].name} · ${cams[i].place}`;document.getElementById('event').classList.remove('show');eventState=0}
+const box=document.getElementById('cams');cams.forEach((x,i)=>{let b=document.createElement('div');b.className='cam'+(i===0?' active':'');b.innerHTML=`${x.name} <span style="float:right">${x.place}</span>`;b.onclick=()=>setCam(i);box.appendChild(b)});
+function clock(){let d=new Date();document.getElementById('clock').textContent=[d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')}setInterval(clock,250);clock();
+// Keyboard shortcuts for stream operators
+addEventListener('keydown',e=>{let n=Number(e.key);if(n>=1&&n<=6)setCam(n-1);if(e.key.toLowerCase()==='m')trigger()});
+</script>
+</body>
+</html>
