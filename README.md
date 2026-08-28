@@ -1,25 +1,22 @@
-# Haunted CCTV
+# Haunted CCTV — Night Watch
 
-Procedural, passive-viewing 3D-inspired CCTV horror scene designed for browser playback and 24/7 YouTube Live capture.
+A procedural 3D haunted-surveillance scene designed for passive 24/7 YouTube Live capture.
 
 ## Features
 
-- Six switchable surveillance cameras
-- Procedural paranormal events with randomized timing
-- CRT scanlines, vignette, noise and signal flashes
-- Live clock and surveillance HUD
-- Keyboard shortcuts: `1`–`6` cameras, `M` manual motion event
-- No external build system or server required
-- Static-host friendly for Netlify and GitHub Pages
-
-## Local use
-
-Open `index.html` directly in a browser, or serve the folder with any static web server.
-
-## YouTube Live
-
-Open the deployed site in Chrome/Edge, hide browser UI, use a 16:9 capture region in OBS, and leave the scene running. Camera selection is optional; the procedural event system continues indefinitely.
+- Six distinct surveillance locations
+- Real-time Three.js 3D geometry, perspective, lighting and fog
+- CRT scanlines, vignette and animated grain
+- Randomized paranormal events with rarity tiers
+- Rare apparition events and proximity events
+- Camera switching with `1`–`6`
+- Force a paranormal event with `M`
+- Random camera with `Space`
+- No backend and no finite end state
+- Netlify-ready static deployment
 
 ## Deployment
 
-This project is intentionally static. Netlify can serve the repository root directly with no build command and no publish-directory transformation required.
+The site is a static `index.html` and can be deployed directly from this repository. `netlify.toml` configures the repository root as the publish directory.
+
+For YouTube Live, capture the deployed page with OBS at 1920×1080 and keep the browser source running continuously.
