@@ -17,6 +17,6 @@ A procedural 3D haunted-surveillance scene designed for passive 24/7 YouTube Liv
 
 ## Deployment
 
-The site is a static `index.html` and can be deployed directly from this repository. `netlify.toml` configures the repository root as the publish directory.
+The site is a static `index.html`. `netlify.toml` configures the repository root as the publish directory.
 
 For YouTube Live, capture the deployed page with OBS at 1920×1080 and keep the browser source running continuously.
